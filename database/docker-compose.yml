@@ -1,0 +1,12 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: torqueiq-nexus-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - torqueiq_nexus_data:/data/db
+
+volumes:
+  torqueiq_nexus_data:
