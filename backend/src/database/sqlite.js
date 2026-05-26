@@ -176,6 +176,12 @@ function migrateDatabase() {
   addColumnIfMissing('payments', 'approved_by', 'INTEGER');
   addColumnIfMissing('payments', 'approved_at', 'TEXT');
   addColumnIfMissing('payments', 'notes', 'TEXT');
+  addColumnIfMissing('repairs', 'vehicle_type', 'TEXT');
+  addColumnIfMissing('repairs', 'booking_brand', 'TEXT');
+  addColumnIfMissing('repairs', 'booking_model', 'TEXT');
+  addColumnIfMissing('repairs', 'service_type', 'TEXT');
+  addColumnIfMissing('repairs', 'scheduled_at', 'TEXT');
+  addColumnIfMissing('repairs', 'estimated_cost', 'REAL DEFAULT 0');
   db.exec(schema);
   db.exec('CREATE INDEX IF NOT EXISTS idx_users_customer_id ON users(customer_id);');
 }
@@ -234,9 +240,15 @@ CREATE TABLE IF NOT EXISTS repairs (
   customer_id INTEGER NOT NULL,
   vehicle_id INTEGER,
   mechanic_id INTEGER,
+  vehicle_type TEXT,
+  booking_brand TEXT,
+  booking_model TEXT,
+  service_type TEXT,
+  scheduled_at TEXT,
   issue_type TEXT NOT NULL,
   description TEXT NOT NULL,
   priority TEXT DEFAULT 'normal',
+  estimated_cost REAL DEFAULT 0,
   status TEXT DEFAULT 'submitted',
   bill_amount REAL DEFAULT 0,
   paid INTEGER DEFAULT 0,

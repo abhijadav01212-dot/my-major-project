@@ -12,13 +12,14 @@ Brand line: **Provided by Abhishek Jatav**
 - Secret-code protection for Boss password change and system reset: `8813`.
 - Clean login/signup authentication with role-based sessions.
 - Unique 8-character Customer ID generation for every customer account.
-- Customer vehicle garage, repair requests, photo uploads, complaints, feedback, bills, and completion confirmation.
-- Mechanic dashboard for accepting jobs and updating repair progress.
+- Customer vehicle garage, luxury repair booking, photo uploads, complaints, private messages, bills, and completion confirmation.
+- Mechanic dashboard for accepting jobs, sending customer-specific repair updates, uploading proof photos, and marking service complete.
 - Boss dashboard for complaints, staff, customers, login history, payments, inventory, revenue, analytics, and protected actions.
 - Dedicated Accounts dashboard for billing, GST invoices, payment approvals, transaction history, and revenue/GST analytics.
-- Product marketplace for engine oil, batteries, indicators, tyres, brake pads, repair kits, car accessories, and bike accessories.
+- Luxury product marketplace for engine oil, batteries, indicators, tyres, brake pads, repair kits, car accessories, and bike accessories.
 - Payment workflow with UPI, Card, Cash, Net Banking, transaction ID, UTR, screenshot upload, approval status, and invoice number.
 - Automatic GST invoice generation with PDF download, printable bill details, QR code payloads, and WhatsApp invoice/support links.
+- Local premium PNG visual pack for homepage, Customer, Staff, Boss, and Accounts dashboard surfaces.
 - AI repair estimate, health score, recommendations, and analytics insights.
 - Python/Pandas analytics and Scikit-learn training scaffolds for real exported data.
 
@@ -61,6 +62,7 @@ npm run dev
 ## Folder Structure
 
 - `frontend/`: React, Tailwind CSS, Framer Motion, Chart.js UI.
+- `frontend/public/visuals/`: generated premium PNG dashboard and marketplace visuals.
 - `backend/`: Node.js, Express.js, JWT auth, route controllers, middleware, and SQLite persistence.
 - `backend/src/controllers/`: business workflow handlers.
 - `backend/src/routes/`: API route definitions.

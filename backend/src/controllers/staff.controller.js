@@ -8,7 +8,7 @@ function jobRow(row) {
     priority: row.priority,
     status: row.status,
     billAmount: row.bill_amount,
-    customer: { name: row.customer_name, mobile: row.customer_mobile },
+    customer: { id: row.customer_id, name: row.customer_name, mobile: row.customer_mobile },
     vehicle: row.registration_number ? { registrationNumber: row.registration_number, make: row.make, model: row.model } : null
   };
 }
@@ -51,9 +51,22 @@ export async function updateJob(req, res) {
   const proofPhotos = (req.files || []).map((file) => `/uploads/${file.filename}`);
   const existingProof = job.proof_photos ? JSON.parse(job.proof_photos) : [];
   const billAmount = Number(req.body.billAmount ?? job.bill_amount ?? 0);
+  const nextStatus = req.body.status || job.status;
   run(
     `UPDATE repairs SET status = ?, bill_amount = ?, proof_photos = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-    [req.body.status || job.status, billAmount, JSON.stringify([...existingProof, ...proofPhotos]), req.params.id]
+    [nextStatus, billAmount, JSON.stringify([...existingProof, ...proofPhotos]), req.params.id]
   );
-  res.json({ message: req.body.status === 'completed' ? 'Service completed' : 'Repair status updated' });
+  if (req.body.note) {
+    run(
+      'INSERT INTO messages (sender_id, receiver_id, body, channel) VALUES (?, ?, ?, ?)',
+      [req.user.id, job.customer_id, req.body.note, 'repair_update']
+    );
+  }
+  if (nextStatus === 'completed' && job.status !== 'completed') {
+    run(
+      'INSERT INTO messages (sender_id, receiver_id, body, channel) VALUES (?, ?, ?, ?)',
+      [req.user.id, job.customer_id, 'Your vehicle repair has been completed successfully.', 'repair_completed']
+    );
+  }
+  res.json({ message: nextStatus === 'completed' ? 'Service completed' : 'Repair status updated' });
 }

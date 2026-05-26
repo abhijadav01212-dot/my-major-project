@@ -23,6 +23,12 @@ function repairRow(row) {
     issueType: row.issue_type,
     description: row.description,
     priority: row.priority,
+    vehicleType: row.vehicle_type,
+    bookingBrand: row.booking_brand,
+    bookingModel: row.booking_model,
+    serviceType: row.service_type,
+    scheduledAt: row.scheduled_at,
+    estimatedCost: row.estimated_cost,
     status: row.status,
     billAmount: row.bill_amount,
     paid: Boolean(row.paid),
@@ -53,14 +59,36 @@ export async function myVehicles(req, res) {
 }
 
 export async function createRepairJob(req, res) {
-  const vehicle = get('SELECT * FROM vehicles WHERE id = ? AND owner_id = ?', [req.body.vehicle, req.user.id]);
-  if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
+  const vehicle = req.body.vehicle ? get('SELECT * FROM vehicles WHERE id = ? AND owner_id = ?', [req.body.vehicle, req.user.id]) : null;
+  if (req.body.vehicle && !vehicle) return res.status(404).json({ message: 'Vehicle not found' });
+  if (!req.body.issueType || !req.body.description) return res.status(400).json({ message: 'Issue/problem and description are required' });
   const issuePhotos = (req.files || []).map((file) => `/uploads/${file.filename}`);
-  const aiEstimate = predictRepair({ issueType: req.body.issueType, odometerKm: vehicle.odometer_km, year: vehicle.year, priority: req.body.priority });
+  const aiEstimate = predictRepair({
+    issueType: req.body.issueType,
+    odometerKm: vehicle?.odometer_km || req.body.odometerKm || 0,
+    year: vehicle?.year || req.body.year || new Date().getFullYear(),
+    priority: req.body.priority
+  });
+  const estimatedCost = Number(req.body.estimatedCost || Math.round(((aiEstimate.costMin || 0) + (aiEstimate.costMax || 0)) / 2));
   const result = run(
-    `INSERT INTO repairs (customer_id, vehicle_id, issue_type, description, priority, status, ai_estimate, issue_photos)
-     VALUES (?, ?, ?, ?, ?, 'submitted', ?, ?)`,
-    [req.user.id, vehicle.id, req.body.issueType, req.body.description, req.body.priority || 'normal', JSON.stringify(aiEstimate), JSON.stringify(issuePhotos)]
+    `INSERT INTO repairs (customer_id, vehicle_id, vehicle_type, booking_brand, booking_model, service_type, scheduled_at,
+      issue_type, description, priority, estimated_cost, status, ai_estimate, issue_photos)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', ?, ?)`,
+    [
+      req.user.id,
+      vehicle?.id || null,
+      req.body.vehicleType || '',
+      req.body.brand || vehicle?.make || '',
+      req.body.model || vehicle?.model || '',
+      req.body.serviceType || 'General inspection',
+      req.body.scheduledAt || '',
+      req.body.issueType,
+      req.body.description,
+      req.body.priority || 'normal',
+      estimatedCost,
+      JSON.stringify(aiEstimate),
+      JSON.stringify(issuePhotos)
+    ]
   );
   res.status(201).json(repairRow(getRepairById(Number(result.lastInsertRowid))));
 }
@@ -95,7 +123,8 @@ export async function sendFeedback(req, res) {
 }
 
 export async function messageSupport(req, res) {
-  const result = run('INSERT INTO messages (sender_id, body, channel) VALUES (?, ?, ?)', [req.user.id, req.body.body, 'support']);
+  const boss = get("SELECT id FROM users WHERE role = 'boss' ORDER BY id LIMIT 1");
+  const result = run('INSERT INTO messages (sender_id, receiver_id, body, channel) VALUES (?, ?, ?, ?)', [req.user.id, boss?.id || null, req.body.body, 'support']);
   res.status(201).json({ _id: Number(result.lastInsertRowid), body: req.body.body });
 }
 
