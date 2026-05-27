@@ -97,7 +97,7 @@ const certificates = [
   { title: 'SQL Course', issuer: 'Self Learning', date: '02/05/2026', image: '/assets/certificates/SQL_Course_Certificate.png', link: 'https://www.skillcourse.in/verify/SC-5C38B49355' },
   { title: 'Microsoft Excel', issuer: 'Self Learning', date: '02/05/2026', image: '/assets/certificates/Microsoft_Excel_Certificate.png', link: 'https://www.skillcourse.in/verify/SC-9D17BC686B' },
   { title: 'Microsoft Power BI', issuer: 'Self Learning', date: '09/03/2026', image: '/assets/certificates/Microsoft_Power_BI_Certificate.png', link: 'https://www.skillcourse.in/verify/SC-9F136D81F3' },
-  { title: 'Tableau', issuer: 'Self Learning', date: '02/05/2026', image: '/assets/certificates/Tableau_Certificate.png', link: 'https://www.skillcourse.in/verify/tableau-abhishek-jatav' }
+  { title: 'Tableau', issuer: 'Certificate Placeholder', date: 'Coming Soon', image: '/assets/certificates/Tableau_Certificate.png', link: LINKEDIN }
 ];
 
 const technicalSkills = [
@@ -765,7 +765,7 @@ function ChatBot() {
     const v = value.toLowerCase();
     if (v.includes('project')) return 'Abhishek has built SQL inventory, Power BI Telangana growth, Tableau sales, and Excel sales-analysis dashboards.';
     if (v.includes('skill')) return 'Core skills include SQL, Python, Power BI, Tableau, Advanced Excel, Pandas, NumPy, Statistics, and AWS QuickSight.';
-    if (v.includes('certificate')) return 'Certificates include SQL Course, Microsoft Excel, Microsoft Power BI, and Tableau.';
+    if (v.includes('certificate')) return 'Certificates include SQL Course, Microsoft Excel, and Microsoft Power BI. Tableau is shown as a placeholder until the final certificate is available.';
     if (v.includes('contact')) return `Email ${EMAIL}. LinkedIn and GitHub QR access is available in the hero and contact sections.`;
     return 'This portfolio highlights Abhishek Jatav as a Data Analyst with dashboarding, SQL, BI, and analytics strengths.';
   };
