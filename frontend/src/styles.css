@@ -388,6 +388,8 @@ img { max-width: 100%; display: block; }
   object-fit: contain;
   object-position: center center;
   background: white;
+  transform: scale(1.38);
+  transform-origin: center 32%;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 0 28px rgba(31, 182, 255, .28);
 }
 
