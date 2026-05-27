@@ -24,6 +24,8 @@ const GITHUB = `https://github.com/${GITHUB_USERNAME}`;
 const RESUME_URL = `${A}resume.png`;
 const PROFILE_PHOTO = `${A}profile-final.png`;
 const EMAIL = 'it22.abhishekjatav@svceindore.ac.in';
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
+const PROJECTS_API = `${API_BASE}/api/portfolio/projects`;
 
 const resume = {
   name: 'Abhishek Jatav',
@@ -566,7 +568,7 @@ function AdminDashboard({ projects, setProjects, notify }) {
   const [link, setLink] = useState(LINKEDIN);
   return (
     <section id="admin" className="section">
-      <SectionTitle icon={UploadCloud} kicker="Admin dashboard" title="Upload, Preview, QR & Local Storage System" body="A working local admin console for PNG uploads, drag and drop previews, gallery management, download actions, and QR generation." />
+      <SectionTitle icon={UploadCloud} kicker="Admin dashboard" title="SQLite Project Database System" body="A working admin console where projects load from SQLite and change only when you add, edit, delete, or upload images." />
       <div className="admin-layout">
         <GlassCard>
           <div className="admin-profile-strip">
@@ -847,10 +849,36 @@ function useLocalJsonDatabase(key, initialRows) {
       return initialRows;
     }
   });
+  useEffect(() => {
+    let active = true;
+    fetch(PROJECTS_API)
+      .then((response) => {
+        if (!response.ok) throw new Error('SQLite portfolio API unavailable');
+        return response.json();
+      })
+      .then((projects) => {
+        if (!active || !Array.isArray(projects)) return;
+        const cleanRows = projects.map(normalizeProjectRecord);
+        setRowsState(cleanRows);
+        try { localStorage.setItem(key, JSON.stringify(cleanRows)); } catch { /* local fallback is best effort */ }
+      })
+      .catch(() => {
+        // Keep the local cached fallback when the backend is not running.
+      });
+    return () => { active = false; };
+  }, [key]);
+
   const setRows = (nextRows) => {
     const cleanRows = nextRows.map(normalizeProjectRecord);
     setRowsState(cleanRows);
     try { localStorage.setItem(key, JSON.stringify(cleanRows)); } catch { /* large image uploads may exceed browser quota */ }
+    fetch(`${PROJECTS_API}/bulk`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projects: cleanRows })
+    }).catch(() => {
+      // Offline/local fallback already updated above.
+    });
   };
   return [rows, setRows];
 }

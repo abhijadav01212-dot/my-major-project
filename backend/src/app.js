@@ -18,6 +18,7 @@ import paymentRoutes from './routes/payment.routes.js';
 import accountsRoutes from './routes/accounts.routes.js';
 import invoiceRoutes from './routes/invoice.routes.js';
 import aiRoutes from './routes/ai.routes.js';
+import portfolioRoutes from './routes/portfolio.routes.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 const app = express();
@@ -26,8 +27,8 @@ initDatabase();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
-app.use(express.json({ limit: '8mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '30mb' }));
+app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 app.use(morgan('dev'));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 400 }));
 app.use('/uploads', express.static(path.resolve(__dirname, '../../uploads')));
@@ -54,6 +55,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/accounts', accountsRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

@@ -25,6 +25,7 @@ export function initDatabase() {
   migrateDatabase();
   seedBossAccount();
   seedAccountsAccount();
+  seedPortfolioProjects();
   ensureExistingCustomerIds();
   return db;
 }
@@ -131,6 +132,56 @@ function ensureExistingCustomerIds() {
   const customers = all("SELECT id FROM users WHERE role = 'customer' AND (customer_id IS NULL OR customer_id = '')");
   for (const customer of customers) {
     run('UPDATE users SET customer_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [generateCustomerId(), customer.id]);
+  }
+}
+
+function seedPortfolioProjects() {
+  const existing = get('SELECT COUNT(*) AS count FROM portfolio_projects')?.count || 0;
+  if (existing > 0) return;
+  const projects = [
+    {
+      id: 'inventory-management-system',
+      title: 'Inventory Management System',
+      description: 'Designed a relational inventory database with employee, supplier, product, stock, order, and customer tables. Added constraints, triggers, joins, and data cleaning queries for operational reporting.',
+      tags: ['SQL', 'Database', 'Reporting'],
+      images: [{ src: '/portfolio-assets/computer-3d.png', name: 'Inventory 3D preview' }],
+      projectLink: 'https://github.com/abhijadav01212-dot/inventory-management-system',
+      githubLink: 'https://github.com/abhijadav01212-dot/inventory-management-system'
+    },
+    {
+      id: 'telangana-growth-analysis',
+      title: 'Telangana Growth Analysis',
+      description: 'Built Power BI analysis with DAX, maps, slicers, transformation, and district-wise trend views for registration, transport, and economic growth insights.',
+      tags: ['Power BI', 'DAX', 'Maps'],
+      images: [{ src: '/portfolio-assets/developer-3d.png', name: 'Power BI 3D preview' }],
+      projectLink: 'https://github.com/abhijadav01212-dot/telangana-growth-analysis',
+      githubLink: 'https://github.com/abhijadav01212-dot/telangana-growth-analysis'
+    },
+    {
+      id: 'tableau-dashboard',
+      title: 'Tableau Dashboard',
+      description: 'Created interactive Tableau dashboards for orders and sales analysis with region, customer, and category views for fast decision-making.',
+      tags: ['Tableau', 'Sales', 'Dashboard'],
+      images: [{ src: '/portfolio-assets/web-3d.png', name: 'Tableau 3D preview' }],
+      projectLink: 'https://github.com/abhijadav01212-dot/tableau-dashboard',
+      githubLink: 'https://github.com/abhijadav01212-dot/tableau-dashboard'
+    },
+    {
+      id: 'sales-analysis-excel',
+      title: 'Sales Analysis',
+      description: 'Implemented Excel data cleaning, pivot analysis, formulas, dashboard charts, and trend summaries from multi-sheet sales data.',
+      tags: ['Excel', 'Pivot Tables', 'Charts'],
+      images: [{ src: '/portfolio-assets/portfolio-3d.png', name: 'Excel dashboard 3D preview' }],
+      projectLink: 'https://github.com/abhijadav01212-dot/sales-analysis-excel',
+      githubLink: 'https://github.com/abhijadav01212-dot/sales-analysis-excel'
+    }
+  ];
+  for (const project of projects) {
+    run(
+      `INSERT INTO portfolio_projects (id, title, description, tags_json, images_json, project_link, github_link)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [project.id, project.title, project.description, JSON.stringify(project.tags), JSON.stringify(project.images), project.projectLink, project.githubLink]
+    );
   }
 }
 
@@ -371,9 +422,22 @@ CREATE TABLE IF NOT EXISTS analytics_reports (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS portfolio_projects (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  tags_json TEXT NOT NULL DEFAULT '[]',
+  images_json TEXT NOT NULL DEFAULT '[]',
+  project_link TEXT NOT NULL DEFAULT '',
+  github_link TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_login_history_user ON login_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_payments_customer ON payments(customer_id);
 CREATE INDEX IF NOT EXISTS idx_repairs_status ON repairs(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_customer ON invoices(customer_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_projects_updated ON portfolio_projects(updated_at);
 `;
