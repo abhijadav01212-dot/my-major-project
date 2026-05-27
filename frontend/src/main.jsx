@@ -5,7 +5,7 @@ import {
   Award, BarChart3, Bot, BriefcaseBusiness, CheckCircle2, Contact, Database,
   Download, ExternalLink, Eye, FileBadge, Github, GraduationCap, ImagePlus,
   Languages, LayoutDashboard, Linkedin, Mail, MapPin, Menu, Moon, Pencil,
-  Presentation, QrCode, Send, Sparkles, Sun, Trash2, UploadCloud, X
+  Plus, Presentation, QrCode, Save, Send, Sparkles, Sun, Trash2, UploadCloud, X
 } from 'lucide-react';
 import {
   Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, RadialLinearScale,
@@ -19,9 +19,11 @@ ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, RadialLinea
 const A = '/portfolio-assets/';
 const RESUME_PDF = '/assets/resume/Abhishek_Jatav_Resume.pdf';
 const LINKEDIN = 'https://www.linkedin.com/in/abhishek-jatav-ba821b407/';
+const GITHUB_USERNAME = 'abhijadav01212-dot';
+const GITHUB = `https://github.com/${GITHUB_USERNAME}`;
 const RESUME_URL = `${A}resume.png`;
-const EMAIL = 'abhishekjatav1111@gmail.com';
-const PHONE = '6264517638';
+const PROFILE_PHOTO = `${A}profile-final.png`;
+const EMAIL = 'it22.abhishekjatav@svceindore.ac.in';
 
 const resume = {
   name: 'Abhishek Jatav',
@@ -52,33 +54,41 @@ const resume = {
   interests: ['Technology', 'Stock Market', 'Badminton', 'Novels']
 };
 
-const projects = [
+const defaultProjects = [
   {
+    id: 'inventory-management-system',
     title: 'Inventory Management System',
-    stack: 'SQL',
-    image: `${A}computer-3d.png`,
-    link: 'https://github.com/abhishek-jatav/inventory-management-system',
+    tags: ['SQL', 'Database', 'Reporting'],
+    images: [{ src: `${A}computer-3d.png`, name: 'Inventory 3D preview' }],
+    projectLink: `${GITHUB}/inventory-management-system`,
+    githubLink: `${GITHUB}/inventory-management-system`,
     description: 'Designed a relational inventory database with employee, supplier, product, stock, order, and customer tables. Added constraints, triggers, joins, and data cleaning queries for operational reporting.'
   },
   {
+    id: 'telangana-growth-analysis',
     title: 'Telangana Growth Analysis',
-    stack: 'Power BI',
-    image: `${A}developer-3d.png`,
-    link: 'https://github.com/abhishek-jatav/telangana-growth-analysis',
+    tags: ['Power BI', 'DAX', 'Maps'],
+    images: [{ src: `${A}developer-3d.png`, name: 'Power BI 3D preview' }],
+    projectLink: `${GITHUB}/telangana-growth-analysis`,
+    githubLink: `${GITHUB}/telangana-growth-analysis`,
     description: 'Built Power BI analysis with DAX, maps, slicers, transformation, and district-wise trend views for registration, transport, and economic growth insights.'
   },
   {
+    id: 'tableau-dashboard',
     title: 'Tableau Dashboard',
-    stack: 'Tableau',
-    image: `${A}web-3d.png`,
-    link: 'https://github.com/abhishek-jatav/tableau-dashboard',
+    tags: ['Tableau', 'Sales', 'Dashboard'],
+    images: [{ src: `${A}web-3d.png`, name: 'Tableau 3D preview' }],
+    projectLink: `${GITHUB}/tableau-dashboard`,
+    githubLink: `${GITHUB}/tableau-dashboard`,
     description: 'Created interactive Tableau dashboards for orders and sales analysis with region, customer, and category views for fast decision-making.'
   },
   {
+    id: 'sales-analysis-excel',
     title: 'Sales Analysis',
-    stack: 'Excel',
-    image: `${A}portfolio-3d.png`,
-    link: 'https://github.com/abhishek-jatav/sales-analysis-excel',
+    tags: ['Excel', 'Pivot Tables', 'Charts'],
+    images: [{ src: `${A}portfolio-3d.png`, name: 'Excel dashboard 3D preview' }],
+    projectLink: `${GITHUB}/sales-analysis-excel`,
+    githubLink: `${GITHUB}/sales-analysis-excel`,
     description: 'Implemented Excel data cleaning, pivot analysis, formulas, dashboard charts, and trend summaries from multi-sheet sales data.'
   }
 ];
@@ -108,6 +118,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [modal, setModal] = useState(null);
+  const [projects, setProjects] = useLocalJsonDatabase('abhishek-projects-json', defaultProjects);
 
   const notify = (message) => {
     setToast(message);
@@ -145,11 +156,11 @@ function App() {
         <Hero notify={notify} />
         <ResumeDashboard />
         <EducationDashboard notify={notify} />
-        <ProjectDashboard notify={notify} />
+        <ProjectDashboard projects={projects} setProjects={setProjects} notify={notify} setModal={setModal} />
         <CertificateDashboard setModal={setModal} notify={notify} />
         <SkillsDashboard />
         <CommunicationDashboard />
-        <AdminDashboard notify={notify} />
+        <AdminDashboard projects={projects} setProjects={setProjects} notify={notify} />
         <ContactSection notify={notify} />
       </main>
       <ChatBot />
@@ -164,7 +175,7 @@ function Header({ dark, setDark, menuOpen, setMenuOpen }) {
   return (
     <header className="topbar">
       <a className="brand" href="#home" aria-label="Abhishek Jatav home">
-        <span className="brand-mark">AJ</span>
+        <img className="nav-avatar" src={PROFILE_PHOTO} alt="Abhishek Jatav" />
         <span><strong>Abhishek Portfolio</strong><small>Data dashboard OS</small></span>
       </a>
       <nav className="desktop-nav">
@@ -207,7 +218,7 @@ function Hero({ notify }) {
           <a className="secondary-btn" href={RESUME_PDF} download="Abhishek_Jatav_Resume.pdf"><Download size={18} /> Download Resume</a>
           <a className="secondary-btn" href="#contact"><Contact size={18} /> Contact</a>
           <a className="icon-button social linkedin-link" href={LINKEDIN} target="_blank" rel="noreferrer" title="LinkedIn"><Linkedin size={19} /></a>
-          <a className="icon-button social" href="https://github.com/abhishek-jatav" target="_blank" rel="noreferrer" title="GitHub"><Github size={19} /></a>
+          <a className="icon-button social" href={GITHUB} target="_blank" rel="noreferrer" title="GitHub"><Github size={19} /></a>
           <button className="icon-button social" type="button" onClick={() => notify('LinkedIn QR is ready to scan')} title="LinkedIn QR"><QrCode size={19} /></button>
         </div>
         <div className="hero-stats">
@@ -219,7 +230,7 @@ function Hero({ notify }) {
       <motion.div className="hero-board" initial={{ opacity: 0, rotateX: 8, y: 24 }} animate={{ opacity: 1, rotateX: 0, y: 0 }} transition={{ delay: .12 }}>
         <div className="profile-card tilt-card">
           <div className="profile-photo-wrap">
-            <div className="profile-photo" role="img" aria-label="Abhishek Jatav profile from resume" />
+            <img className="profile-photo" src={PROFILE_PHOTO} alt="Abhishek Jatav profile" />
           </div>
           <div>
             <p className="micro-label">Abhishek Portfolio dashboard</p>
@@ -248,7 +259,7 @@ function ResumeDashboard() {
           <h3>About Me</h3>
           <p>{resume.summary}</p>
           <div className="contact-pills">
-            <span>{EMAIL}</span><span>{PHONE}</span><span>Indore, Madhya Pradesh</span>
+            <span>{EMAIL}</span><span>Indore, Madhya Pradesh</span>
           </div>
         </GlassCard>
         <DataCard icon={Award} title="Achievements" items={resume.achievements} />
@@ -302,26 +313,53 @@ function EducationCard({ item, notify }) {
   );
 }
 
-function ProjectDashboard({ notify }) {
+function ProjectDashboard({ projects, setProjects, notify, setModal }) {
+  const updateProject = (updatedProject) => {
+    setProjects(projects.map((project) => project.id === updatedProject.id ? updatedProject : project));
+    notify(`${updatedProject.title} project updated`);
+  };
+  const deleteProject = (projectId) => {
+    const target = projects.find((project) => project.id === projectId);
+    setProjects(projects.filter((project) => project.id !== projectId));
+    notify(`${target?.title || 'Project'} deleted`);
+  };
   return (
     <section id="projects" className="section">
       <SectionTitle icon={Database} kicker="Project command center" title="Analytics Project Dashboard" body="Every project supports multiple PNG uploads, gallery previews, QR generation, and animated dashboard cards." />
       <div className="project-grid">
-        {projects.map((project) => <ProjectCard key={project.title} project={project} notify={notify} />)}
+        {projects.map((project) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            notify={notify}
+            onUpdate={updateProject}
+            onDelete={deleteProject}
+            setModal={setModal}
+          />
+        ))}
       </div>
     </section>
   );
 }
 
-function ProjectCard({ project, notify }) {
-  const [uploads, setUploads] = usePersistentImages(`project-${project.title}`);
-  const gallery = uploads.length ? uploads : [{ src: project.image, name: project.title }];
+function ProjectCard({ project, notify, onUpdate, onDelete, setModal }) {
+  const gallery = normalizeProjectImages(project);
   const [active, setActive] = useState(0);
   useEffect(() => {
     if (gallery.length < 2) return undefined;
     const id = window.setInterval(() => setActive((index) => (index + 1) % gallery.length), 2600);
     return () => window.clearInterval(id);
   }, [gallery.length]);
+  const addImages = (files) => {
+    onUpdate({ ...project, images: [...gallery, ...files] });
+    setActive(0);
+  };
+  const replaceImages = (files) => {
+    onUpdate({ ...project, images: files.length ? files : gallery });
+    setActive(0);
+  };
+  const projectUrl = project.projectLink || project.githubLink || GITHUB;
+  const tags = normalizeTags(project.tags || project.stack);
   return (
     <motion.article className="project-card tilt-card" whileHover={{ y: -8, rotateX: 2 }}>
       <div className="gallery-shell">
@@ -330,21 +368,27 @@ function ProjectCard({ project, notify }) {
       </div>
       <div className="card-body">
         <div className="card-heading">
-          <div><p className="micro-label">{project.stack}</p><h3>{project.title}</h3></div>
-          <span className="qr-scan"><img className="mini-qr" src={qrUrl(project.link, 120)} alt={`${project.title} QR`} /></span>
+          <div><p className="micro-label">{tags.join(' / ')}</p><h3>{project.title}</h3></div>
+          <span className="qr-scan"><img className="mini-qr" src={qrUrl(projectUrl, 120)} alt={`${project.title} QR`} /></span>
         </div>
         <p>{project.description}</p>
+        <div className="tag-row">{tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
         <AssetControls
-          label="Update project PNG gallery"
+          label="Replace project PNG gallery"
           multiple
-          current={uploads}
-          fallback={project.image}
-          onImages={(files) => { setUploads(files); setActive(0); notify(`${project.title} gallery updated`); }}
-          onDelete={() => { setUploads([]); setActive(0); notify(`${project.title} gallery reset to 3D preview`); }}
+          current={gallery}
+          fallback={gallery[0]?.src}
+          onImages={replaceImages}
+          onDelete={() => { onUpdate({ ...project, images: normalizeProjectImages(defaultProjects.find((item) => item.id === project.id) || project) }); notify(`${project.title} gallery reset`); }}
         />
+        <UploadZone label="Upload more project PNG images" multiple onImages={addImages} />
         <div className="split-actions">
-          <a className="primary-btn" href={project.link} target="_blank" rel="noreferrer">View Project <ExternalLink size={17} /></a>
-          <a className="secondary-btn" href={qrUrl(project.link, 600)} download><QrCode size={17} /> QR</a>
+          <a className="primary-btn" href={projectUrl} target="_blank" rel="noreferrer">View Project <ExternalLink size={17} /></a>
+          <a className="secondary-btn" href={project.githubLink || GITHUB} target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
+          <button className="secondary-btn" type="button" onClick={() => setModal({ type: 'project-gallery', title: project.title, issuer: 'Project Gallery', date: `${gallery.length} image${gallery.length === 1 ? '' : 's'}`, images: gallery, image: gallery[active % gallery.length].src, link: projectUrl })}><Eye size={17} /> Gallery</button>
+          <a className="secondary-btn" href={qrUrl(projectUrl, 600)} download><QrCode size={17} /> QR</a>
+          <button className="mini-action" type="button" onClick={() => window.dispatchEvent(new CustomEvent('edit-project', { detail: project.id }))}><Pencil size={15} /> Edit</button>
+          <button className="mini-action danger" type="button" onClick={() => onDelete(project.id)}><Trash2 size={15} /> Delete</button>
         </div>
       </div>
     </motion.article>
@@ -517,7 +561,7 @@ function CommunicationDashboard() {
   );
 }
 
-function AdminDashboard({ notify }) {
+function AdminDashboard({ projects, setProjects, notify }) {
   const [uploads, setUploads] = usePersistentImages('admin-gallery');
   const [link, setLink] = useState(LINKEDIN);
   return (
@@ -525,6 +569,13 @@ function AdminDashboard({ notify }) {
       <SectionTitle icon={UploadCloud} kicker="Admin dashboard" title="Upload, Preview, QR & Local Storage System" body="A working local admin console for PNG uploads, drag and drop previews, gallery management, download actions, and QR generation." />
       <div className="admin-layout">
         <GlassCard>
+          <div className="admin-profile-strip">
+            <img className="profile-avatar-sm" src={PROFILE_PHOTO} alt="Abhishek Jatav admin profile" />
+            <div>
+              <p className="micro-label">Admin profile</p>
+              <h3>Abhishek Jatav</h3>
+            </div>
+          </div>
           <h3>Dashboard Upload Manager</h3>
           <AssetControls
             label="Update dashboard PNG/JPG images"
@@ -548,7 +599,119 @@ function AdminDashboard({ notify }) {
           </div>
         </GlassCard>
       </div>
+      <ProjectManager projects={projects} setProjects={setProjects} notify={notify} />
     </section>
+  );
+}
+
+function ProjectManager({ projects, setProjects, notify }) {
+  const emptyForm = {
+    id: '',
+    title: '',
+    description: '',
+    projectLink: '',
+    githubLink: GITHUB,
+    tags: '',
+    images: []
+  };
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState('');
+
+  useEffect(() => {
+    const editFromCard = (event) => {
+      const target = projects.find((project) => project.id === event.detail);
+      if (!target) return;
+      setEditingId(target.id);
+      setForm({
+        ...target,
+        tags: normalizeTags(target.tags).join(', '),
+        images: normalizeProjectImages(target)
+      });
+      document.getElementById('project-manager')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    window.addEventListener('edit-project', editFromCard);
+    return () => window.removeEventListener('edit-project', editFromCard);
+  }, [projects]);
+
+  const resetForm = () => {
+    setEditingId('');
+    setForm(emptyForm);
+  };
+
+  const submitProject = (event) => {
+    event.preventDefault();
+    const title = form.title.trim();
+    if (!title) return;
+    const id = editingId || slugify(title);
+    const nextProject = {
+      id,
+      title,
+      description: form.description.trim(),
+      projectLink: form.projectLink.trim() || form.githubLink.trim() || GITHUB,
+      githubLink: form.githubLink.trim() || GITHUB,
+      tags: normalizeTags(form.tags),
+      images: form.images.length ? form.images : [{ src: `${A}portfolio-3d.png`, name: `${title} preview` }]
+    };
+    setProjects(editingId ? projects.map((project) => project.id === editingId ? nextProject : project) : [nextProject, ...projects]);
+    notify(editingId ? 'Project updated in local JSON database' : 'New project added to portfolio');
+    resetForm();
+  };
+
+  const loadProject = (project) => {
+    setEditingId(project.id);
+    setForm({ ...project, tags: normalizeTags(project.tags).join(', '), images: normalizeProjectImages(project) });
+  };
+
+  const deleteProject = (projectId) => {
+    setProjects(projects.filter((project) => project.id !== projectId));
+    if (editingId === projectId) resetForm();
+    notify('Project deleted from local JSON database');
+  };
+
+  const addImages = (files) => setForm({ ...form, images: [...form.images, ...files] });
+
+  return (
+    <GlassCard className="project-manager" id="project-manager">
+      <div className="manager-head">
+        <div>
+          <p className="micro-label">Local JSON project database</p>
+          <h3>{editingId ? 'Edit Project' : 'Add New Project'}</h3>
+        </div>
+        <button className="primary-btn" type="button" onClick={resetForm}><Plus size={17} /> Add New Project</button>
+      </div>
+      <form className="project-form" onSubmit={submitProject}>
+        <label className="field-label">Project title<input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></label>
+        <label className="field-label">Project link<input value={form.projectLink} onChange={(e) => setForm({ ...form, projectLink: e.target.value })} placeholder="https://..." /></label>
+        <label className="field-label">GitHub link<input value={form.githubLink} onChange={(e) => setForm({ ...form, githubLink: e.target.value })} placeholder={GITHUB} /></label>
+        <label className="field-label">Technology tags<input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="SQL, Power BI, Excel" /></label>
+        <label className="field-label form-wide">Description<textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required /></label>
+        <div className="form-wide">
+          <UploadZone label="Upload multiple PNG project images" multiple onImages={addImages} />
+          <div className="manager-preview">
+            {form.images.map((image, index) => (
+              <button key={`${image.src}-${index}`} type="button" onClick={() => setForm({ ...form, images: form.images.filter((_, i) => i !== index) })} title="Remove image">
+                <img src={image.src} alt={image.name || `Project upload ${index + 1}`} />
+                <X size={15} />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="form-wide split-actions">
+          <button className="primary-btn" type="submit"><Save size={17} /> {editingId ? 'Save Project' : 'Add Project'}</button>
+          <button className="secondary-btn" type="button" onClick={resetForm}>Clear</button>
+        </div>
+      </form>
+      <div className="project-table">
+        {projects.map((project) => (
+          <div key={project.id} className="project-row">
+            <img src={normalizeProjectImages(project)[0]?.src} alt={project.title} />
+            <div><strong>{project.title}</strong><span>{normalizeTags(project.tags).join(', ')}</span></div>
+            <button className="mini-action" type="button" onClick={() => loadProject(project)}><Pencil size={15} /> Edit</button>
+            <button className="mini-action danger" type="button" onClick={() => deleteProject(project.id)}><Trash2 size={15} /> Delete</button>
+          </div>
+        ))}
+      </div>
+    </GlassCard>
   );
 }
 
@@ -563,7 +726,7 @@ function ContactSection({ notify }) {
   };
   return (
     <section id="contact" className="section contact-section">
-      <SectionTitle icon={Mail} kicker="Contact center" title="Let’s Build with Data" body="Contact form, LinkedIn integration, email, phone, and QR access in one polished dashboard." />
+      <SectionTitle icon={Mail} kicker="Contact center" title="Let's Build with Data" body="Contact form, LinkedIn integration, email, GitHub, and QR access in one polished dashboard." />
       <div className="contact-layout">
         <form className="contact-form glass-card" onSubmit={submit}>
           <input placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
@@ -572,13 +735,22 @@ function ContactSection({ notify }) {
           <button className="primary-btn" type="submit"><Send size={18} /> Send Email</button>
         </form>
         <GlassCard className="contact-visual">
-          <img src={`${A}email-3d.png`} alt="Email contact visual" />
+          <img className="contact-profile-photo" src={PROFILE_PHOTO} alt="Abhishek Jatav contact profile" />
           <div className="contact-links">
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
-            <a href={`tel:${PHONE}`}>{PHONE}</a>
             <a className="linkedin-text-link" href={LINKEDIN} target="_blank" rel="noreferrer">LinkedIn profile</a>
+            <a href={GITHUB} target="_blank" rel="noreferrer">GitHub: {GITHUB_USERNAME}</a>
           </div>
           <img className="contact-qr" src={qrUrl(LINKEDIN, 180)} alt="LinkedIn QR" />
+        </GlassCard>
+        <GlassCard className="linkedin-preview-card">
+          <img className="profile-avatar-lg" src={PROFILE_PHOTO} alt="Abhishek Jatav LinkedIn preview" />
+          <div>
+            <p className="micro-label">LinkedIn preview</p>
+            <h3>Abhishek Jatav</h3>
+            <p>Data Analyst | SQL | Power BI | Tableau | Excel</p>
+            <a className="secondary-btn" href={LINKEDIN} target="_blank" rel="noreferrer"><Linkedin size={17} /> Open LinkedIn</a>
+          </div>
         </GlassCard>
       </div>
     </section>
@@ -594,7 +766,7 @@ function ChatBot() {
     if (v.includes('project')) return 'Abhishek has built SQL inventory, Power BI Telangana growth, Tableau sales, and Excel sales-analysis dashboards.';
     if (v.includes('skill')) return 'Core skills include SQL, Python, Power BI, Tableau, Advanced Excel, Pandas, NumPy, Statistics, and AWS QuickSight.';
     if (v.includes('certificate')) return 'Certificates include SQL Course, Microsoft Excel, Microsoft Power BI, and Tableau.';
-    if (v.includes('contact')) return `Email ${EMAIL} or call ${PHONE}. LinkedIn QR is available in the hero and contact sections.`;
+    if (v.includes('contact')) return `Email ${EMAIL}. LinkedIn and GitHub QR access is available in the hero and contact sections.`;
     return 'This portfolio highlights Abhishek Jatav as a Data Analyst with dashboarding, SQL, BI, and analytics strengths.';
   };
   const send = (event) => {
@@ -666,6 +838,50 @@ function usePersistentImages(key) {
   return [images, setImages];
 }
 
+function useLocalJsonDatabase(key, initialRows) {
+  const [rows, setRowsState] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || 'null');
+      return Array.isArray(saved) && saved.length ? saved.map(normalizeProjectRecord) : initialRows;
+    } catch {
+      return initialRows;
+    }
+  });
+  const setRows = (nextRows) => {
+    const cleanRows = nextRows.map(normalizeProjectRecord);
+    setRowsState(cleanRows);
+    try { localStorage.setItem(key, JSON.stringify(cleanRows)); } catch { /* large image uploads may exceed browser quota */ }
+  };
+  return [rows, setRows];
+}
+
+function normalizeProjectRecord(project) {
+  return {
+    id: project.id || slugify(project.title || 'project'),
+    title: project.title || 'Untitled Project',
+    description: project.description || '',
+    tags: normalizeTags(project.tags || project.stack),
+    images: normalizeProjectImages(project),
+    projectLink: project.projectLink || project.link || project.githubLink || GITHUB,
+    githubLink: project.githubLink || project.link || GITHUB
+  };
+}
+
+function normalizeProjectImages(project) {
+  if (Array.isArray(project.images) && project.images.length) return project.images;
+  if (project.image) return [{ src: project.image, name: project.title || 'Project image' }];
+  return [{ src: `${A}portfolio-3d.png`, name: project.title || 'Project preview' }];
+}
+
+function normalizeTags(tags) {
+  if (Array.isArray(tags)) return tags.map((tag) => String(tag).trim()).filter(Boolean);
+  return String(tags || 'Analytics').split(',').map((tag) => tag.trim()).filter(Boolean);
+}
+
+function slugify(value) {
+  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `project-${Date.now()}`;
+}
+
 function fileToData(file) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -724,11 +940,18 @@ function Counter({ label, value, suffix = '' }) {
 }
 
 function PreviewModal({ item, close }) {
+  const galleryImages = item.type === 'project-gallery' ? (item.images || [item]) : null;
   return (
     <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.div className="preview-modal" initial={{ scale: .96, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: .96, y: 20 }}>
         <button className="modal-close" onClick={close}><X size={20} /></button>
-        <img className={item.type === 'resume' ? 'resume-preview-image' : ''} src={item.image} alt={item.title} />
+        {galleryImages ? (
+          <div className="modal-gallery">
+            {galleryImages.map((image, index) => <img key={`${image.src}-${index}`} src={image.src} alt={image.name || `${item.title} preview ${index + 1}`} />)}
+          </div>
+        ) : (
+          <img className={item.type === 'resume' ? 'resume-preview-image' : ''} src={item.image} alt={item.title} />
+        )}
         <div>
           <h3>{item.title}</h3>
           <p>{item.issuer} - {item.date}</p>
@@ -756,7 +979,7 @@ function Footer() {
     <footer>
       <div className="footer-socials">
         <a className="icon-button social linkedin-link" href={LINKEDIN} target="_blank" rel="noreferrer" title="LinkedIn"><Linkedin size={18} /></a>
-        <a className="icon-button social" href="https://github.com/abhishek-jatav" target="_blank" rel="noreferrer" title="GitHub"><Github size={18} /></a>
+        <a className="icon-button social" href={GITHUB} target="_blank" rel="noreferrer" title="GitHub"><Github size={18} /></a>
         <span className="footer-qr"><img src={qrUrl(LINKEDIN, 120)} alt="LinkedIn profile QR code" /></span>
       </div>
       <p>© 2026 Abhishek Portfolio. Built for Abhishek Jatav as a professional AI data analyst dashboard.</p>

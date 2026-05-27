@@ -1,0 +1,38 @@
+[
+  {
+    "id": "inventory-management-system",
+    "title": "Inventory Management System",
+    "description": "Designed a relational inventory database with employee, supplier, product, stock, order, and customer tables. Added constraints, triggers, joins, and data cleaning queries for operational reporting.",
+    "tags": ["SQL", "Database", "Reporting"],
+    "images": ["/portfolio-assets/computer-3d.png"],
+    "projectLink": "https://github.com/abhijadav01212-dot/inventory-management-system",
+    "githubLink": "https://github.com/abhijadav01212-dot/inventory-management-system"
+  },
+  {
+    "id": "telangana-growth-analysis",
+    "title": "Telangana Growth Analysis",
+    "description": "Built Power BI analysis with DAX, maps, slicers, transformation, and district-wise trend views for registration, transport, and economic growth insights.",
+    "tags": ["Power BI", "DAX", "Maps"],
+    "images": ["/portfolio-assets/developer-3d.png"],
+    "projectLink": "https://github.com/abhijadav01212-dot/telangana-growth-analysis",
+    "githubLink": "https://github.com/abhijadav01212-dot/telangana-growth-analysis"
+  },
+  {
+    "id": "tableau-dashboard",
+    "title": "Tableau Dashboard",
+    "description": "Created interactive Tableau dashboards for orders and sales analysis with region, customer, and category views for fast decision-making.",
+    "tags": ["Tableau", "Sales", "Dashboard"],
+    "images": ["/portfolio-assets/web-3d.png"],
+    "projectLink": "https://github.com/abhijadav01212-dot/tableau-dashboard",
+    "githubLink": "https://github.com/abhijadav01212-dot/tableau-dashboard"
+  },
+  {
+    "id": "sales-analysis-excel",
+    "title": "Sales Analysis",
+    "description": "Implemented Excel data cleaning, pivot analysis, formulas, dashboard charts, and trend summaries from multi-sheet sales data.",
+    "tags": ["Excel", "Pivot Tables", "Charts"],
+    "images": ["/portfolio-assets/portfolio-3d.png"],
+    "projectLink": "https://github.com/abhijadav01212-dot/sales-analysis-excel",
+    "githubLink": "https://github.com/abhijadav01212-dot/sales-analysis-excel"
+  }
+]
